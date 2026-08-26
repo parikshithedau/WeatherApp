@@ -18,6 +18,6 @@ enum CityMapper {
     }
 
     static func toDomain(_ dtos: [CitySearchResultDTO]) -> [City] {
-        dtos.compactMap(toDomain)
+        dtos.compactMap { toDomain($0) }
     }
 }

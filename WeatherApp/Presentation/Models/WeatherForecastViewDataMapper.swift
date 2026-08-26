@@ -51,7 +51,7 @@ struct WeatherForecastViewDataMapper: WeatherForecastViewDataMapping, Sendable {
     ) -> ActivityRecommendationViewData {
         let title = StringConstant.Activity.title(for: recommendation.activity)
         let reason = recommendation.reasons
-            .map(StringConstant.Activity.reasonDescription)
+            .map { StringConstant.Activity.reasonDescription(for: $0) }
             .joined(separator: StringConstant.Common.listSeparator)
 
         return ActivityRecommendationViewData(
