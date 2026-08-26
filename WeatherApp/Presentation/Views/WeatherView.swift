@@ -21,6 +21,7 @@ struct WeatherView: View {
             case .idle:
                 Section {
                     placeholderContent
+                        .accessibilityIdentifier(StringConstant.AccessibilityIdentifier.placeholderContent)
                 }
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -29,6 +30,7 @@ struct WeatherView: View {
                 Section {
                     ProgressView(StringConstant.Weather.loading)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .accessibilityIdentifier(StringConstant.AccessibilityIdentifier.loadingIndicator)
                 }
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -37,6 +39,7 @@ struct WeatherView: View {
                 Section {
                     Text(forecast.cityName)
                         .font(.largeTitle.bold())
+                        .accessibilityIdentifier(StringConstant.AccessibilityIdentifier.cityNameLabel)
                 }
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -51,6 +54,7 @@ struct WeatherView: View {
             case .error(let message):
                 Section {
                     errorContent(message)
+                        .accessibilityIdentifier(StringConstant.AccessibilityIdentifier.errorContent)
                 }
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -84,6 +88,7 @@ struct WeatherView: View {
             .frame(height: 44)
             .buttonStyle(.plain)
             .accessibilityLabel(StringConstant.Weather.searchCityAccessibilityLabel)
+            .accessibilityIdentifier(StringConstant.AccessibilityIdentifier.searchCityButton)
 
             Image(systemName: StringConstant.Icon.search)
                 .foregroundStyle(.secondary)
@@ -98,6 +103,7 @@ struct WeatherView: View {
             value: $viewModel.forecastDays,
             in: 1...16
         )
+            .accessibilityIdentifier(StringConstant.AccessibilityIdentifier.forecastDaysStepper)
             .onChange(of: viewModel.forecastDays) { _, _ in
                 Task { await viewModel.refreshForecast() }
             }

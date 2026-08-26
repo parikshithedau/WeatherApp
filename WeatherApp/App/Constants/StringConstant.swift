@@ -221,6 +221,17 @@ enum StringConstant {
         static let weather = "cloud.sun"
     }
 
+    enum AccessibilityIdentifier {
+        static let searchCityButton = "searchCityButton"
+        static let forecastDaysStepper = "forecastDaysStepper"
+        static let cityNameLabel = "cityNameLabel"
+        static let loadingIndicator = "loadingIndicator"
+        static let placeholderContent = "placeholderContent"
+        static let errorContent = "errorContent"
+        static let citySearchField = "citySearchField"
+        static let cityRowPrefix = "cityRow_"
+    }
+
     enum API {
         static let weatherBaseURL = "https://api.open-meteo.com/v1"
         static let weatherForecastPath = "/forecast"

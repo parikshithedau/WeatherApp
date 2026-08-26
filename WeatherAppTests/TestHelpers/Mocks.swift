@@ -87,7 +87,7 @@ enum TestError: Error {
     case expected
 }
 
-final class WeatherRepositorySpy: WeatherRepositoryProtocol, @unchecked Sendable {
+final class WeatherRepositoryMock: WeatherRepositoryProtocol, @unchecked Sendable {
     var result: Result<WeatherForecast, Error>
     private(set) var requests: [(city: City, forecastDays: Int)] = []
 
@@ -101,7 +101,7 @@ final class WeatherRepositorySpy: WeatherRepositoryProtocol, @unchecked Sendable
     }
 }
 
-final class CityRepositorySpy: CitySearchRepositoryProtocol, @unchecked Sendable {
+final class CityRepositoryMock: CitySearchRepositoryProtocol, @unchecked Sendable {
     var result: Result<[City], Error>
     var onSearch: ((String) -> Void)?
     private(set) var queries: [String] = []
@@ -117,7 +117,7 @@ final class CityRepositorySpy: CitySearchRepositoryProtocol, @unchecked Sendable
     }
 }
 
-final class WeatherRemoteDataSourceSpy: WeatherRemoteDataSourceProtocol, @unchecked Sendable {
+final class WeatherRemoteDataSourceMock: WeatherRemoteDataSourceProtocol, @unchecked Sendable {
     var result: Result<WeatherResponseDTO, Error>
     private(set) var requests: [(city: City, forecastDays: Int)] = []
 
@@ -131,7 +131,7 @@ final class WeatherRemoteDataSourceSpy: WeatherRemoteDataSourceProtocol, @unchec
     }
 }
 
-final class CityRemoteDataSourceSpy: CitySearchRemoteDataSourceProtocol, @unchecked Sendable {
+final class CityRemoteDataSourceMock: CitySearchRemoteDataSourceProtocol, @unchecked Sendable {
     var result: Result<[CitySearchResultDTO], Error>
     private(set) var queries: [String] = []
 
@@ -145,7 +145,7 @@ final class CityRemoteDataSourceSpy: CitySearchRemoteDataSourceProtocol, @unchec
     }
 }
 
-final class WeatherAPIServiceSpy: WeatherAPIServiceProtocol, @unchecked Sendable {
+final class WeatherAPIServiceMock: WeatherAPIServiceProtocol, @unchecked Sendable {
     var result: Result<WeatherResponseDTO, Error>
     private(set) var requests: [(latitude: Double, longitude: Double, forecastDays: Int)] = []
 
@@ -159,7 +159,7 @@ final class WeatherAPIServiceSpy: WeatherAPIServiceProtocol, @unchecked Sendable
     }
 }
 
-final class GeocodingAPIServiceSpy: GeocodingAPIServiceProtocol, @unchecked Sendable {
+final class GeocodingAPIServiceMock: GeocodingAPIServiceProtocol, @unchecked Sendable {
     var result: Result<[CitySearchResultDTO], Error>
     private(set) var requests: [(query: String, limit: Int)] = []
 
@@ -173,7 +173,7 @@ final class GeocodingAPIServiceSpy: GeocodingAPIServiceProtocol, @unchecked Send
     }
 }
 
-final class ActivityScorerSpy: ActivityScoring, @unchecked Sendable {
+final class ActivityScorerMock: ActivityScoring, @unchecked Sendable {
     var results: [ActivityScore]
     private(set) var receivedDays: [DailyWeather] = []
 
@@ -187,7 +187,7 @@ final class ActivityScorerSpy: ActivityScoring, @unchecked Sendable {
     }
 }
 
-final class WeatherForecastViewDataMapperSpy: WeatherForecastViewDataMapping, @unchecked Sendable {
+final class WeatherForecastViewDataMapperMock: WeatherForecastViewDataMapping, @unchecked Sendable {
     var viewData: WeatherForecastViewData
     private(set) var receivedForecasts: [WeatherForecast] = []
 
@@ -201,7 +201,7 @@ final class WeatherForecastViewDataMapperSpy: WeatherForecastViewDataMapping, @u
     }
 }
 
-final class APIClientSpy: APIClientProtocol, @unchecked Sendable {
+final class APIClientMock: APIClientProtocol, @unchecked Sendable {
     var weatherResponse = TestFixtures.weatherResponse()
     var cityResponse = CitySearchResponseDTO(results: [TestFixtures.cityDTO()])
     var error: Error?
@@ -249,6 +249,12 @@ final class URLProtocolStub: URLProtocol, @unchecked Sendable {
     }
 
     override func stopLoading() {}
+}
+
+extension Array where Element == URLQueryItem {
+    func value(named name: String) -> String? {
+        first(where: { $0.name == name })?.value
+    }
 }
 
 func assertWeatherError(

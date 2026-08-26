@@ -55,6 +55,7 @@ struct CitySearchView: View {
                     }
                     .buttonStyle(.plain)
                     .contentShape(Rectangle())
+                    .accessibilityIdentifier("\(StringConstant.AccessibilityIdentifier.cityRowPrefix)\(city.id)")
                 }
             }
         }

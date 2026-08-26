@@ -20,6 +20,8 @@ final class WeatherRemoteDataSource: WeatherRemoteDataSourceProtocol, @unchecked
             )
         } catch let error as APIError {
             throw APIErrorMapper.toDomain(error)
+        } catch let error as URLError where error.code == .timedOut {
+            throw WeatherError.requestTimeout
         } catch {
             throw WeatherError.networkError
         }
