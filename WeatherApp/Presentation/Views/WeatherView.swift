@@ -9,27 +9,57 @@ struct WeatherView: View {
     }
 
     var body: some View {
-        VStack(spacing: 24) {
-            citySearchField
-
-            forecastDaysPicker
+        List {
+            Section {
+                citySearchField
+                forecastDaysPicker
+            }
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
 
             switch viewModel.state {
             case .idle:
-                placeholderContent
-            case .loading:
-                ProgressView(StringConstant.Weather.loading)
-            case .loaded(let forecast):
-                ScrollView {
-                    weatherContent(forecast)
+                Section {
+                    placeholderContent
                 }
-            case .error(let message):
-                errorContent(message)
-            }
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
 
-            Spacer()
+            case .loading:
+                Section {
+                    ProgressView(StringConstant.Weather.loading)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+
+            case .loaded(let forecast):
+                Section {
+                    Text(forecast.cityName)
+                        .font(.largeTitle.bold())
+                }
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+
+                ForEach(forecast.days) { day in
+                    Section {
+                        dayContent(day)
+                    }
+                    .listRowBackground(Color.clear)
+                }
+
+            case .error(let message):
+                Section {
+                    errorContent(message)
+                }
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+            }
         }
-        .padding()
+        .listStyle(.plain)
+        .refreshable {
+            await viewModel.refreshForecast()
+        }
         .navigationTitle(StringConstant.Weather.title)
         .navigationBarTitleDisplayMode(.large)
         .onChange(of: router.selectedCity) { _, city in
@@ -73,52 +103,34 @@ struct WeatherView: View {
             }
     }
 
-    private func weatherContent(_ forecast: WeatherForecastViewData) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(forecast.cityName)
-                .font(.largeTitle.bold())
-
-            Text(forecast.timeZone)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            ForEach(forecast.days) { day in
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(day.date)
-                                .font(.headline)
-                            Text(day.conditionDescription)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-
-                        Spacer()
-
-                        VStack(alignment: .trailing, spacing: 3) {
-                            Text(day.temperatureSummary)
-                                .font(.headline)
-                            Text(day.windAndUVSummary)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text(day.precipitationAndSnowSummary)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    activityRecommendations(day.activityRecommendations)
+    private func dayContent(_ day: WeatherDayViewData) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(day.date)
+                        .font(.headline)
+                    Text(day.conditionDescription)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
-                .padding(.vertical, 8)
 
-                if day.id != forecast.days.last?.id {
-                    Divider()
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 3) {
+                    Text(day.temperatureSummary)
+                        .font(.headline)
+                    Text(day.windAndUVSummary)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(day.precipitationAndSnowSummary)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
+
+            activityRecommendations(day.activityRecommendations)
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .padding(.vertical, 8)
     }
 
     private func activityRecommendations(_ recommendations: [ActivityRecommendationViewData]) -> some View {

@@ -195,6 +195,20 @@ enum StringConstant {
         static func httpStatus(_ statusCode: Int) -> String {
             String(format: "Request failed with status code %d.", statusCode)
         }
+
+        enum CitySearch {
+            static let network = "Unable to search cities. Check your network and try again."
+            static let requestTimeout = "City search timed out. Please try again."
+            static let unauthorized = "City search could not be authorized. Please try again later."
+            static let forbidden = "City search is not available right now. Please try again later."
+            static let rateLimited = "Too many search requests. Please wait a moment and try again."
+            static let server = "The city search service is temporarily unavailable. Please try again later."
+            static let decoding = "Received an unexpected response from the city search service."
+            static let invalidResponse = "The city search service returned an invalid response."
+            static let invalidRequest = "The city search request could not be processed."
+            static let noResults = "No cities found. Try a different search term."
+            static let unexpected = "Something went wrong while searching for cities."
+        }
     }
 
     enum Icon {

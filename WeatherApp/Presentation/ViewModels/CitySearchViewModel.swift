@@ -62,7 +62,7 @@ final class CitySearchViewModel: ObservableObject {
             state = cities.isEmpty ? .empty : .results(cities)
         } catch {
             guard !Task.isCancelled else { return }
-            state = .failure(ErrorMessageMapper.message(for: error))
+            state = .failure(CityErrorMessageMapper.message(for: error))
         }
     }
 

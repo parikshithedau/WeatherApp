@@ -17,9 +17,11 @@ final class CitySearchRemoteDataSource: CitySearchRemoteDataSourceProtocol, @unc
         do {
             return try await geocodingAPIService.searchCities(query: query, limit: resultLimit)
         } catch let error as APIError {
-            throw APIErrorMapper.toDomain(error)
+            throw CitySearchAPIErrorMapper.toDomain(error)
+        } catch let error as URLError where error.code == .timedOut {
+            throw CitySearchError.requestTimeout
         } catch {
-            throw WeatherError.networkError
+            throw CitySearchError.networkError
         }
     }
 }

@@ -32,6 +32,32 @@ final class ErrorMessageMapperTests: XCTestCase {
 }
 
 @MainActor
+final class CityErrorMessageMapperTests: XCTestCase {
+    func testMessageMapsEachCitySearchFailureToAnActionableUserMessage() {
+        let testCases: [(CitySearchError, String)] = [
+            (.invalidRequest, StringConstant.Error.CitySearch.invalidRequest),
+            (.networkError, StringConstant.Error.CitySearch.network),
+            (.requestTimeout, StringConstant.Error.CitySearch.requestTimeout),
+            (.unauthorized, StringConstant.Error.CitySearch.unauthorized),
+            (.forbidden, StringConstant.Error.CitySearch.forbidden),
+            (.rateLimited, StringConstant.Error.CitySearch.rateLimited),
+            (.serverError, StringConstant.Error.CitySearch.server),
+            (.decodingError, StringConstant.Error.CitySearch.decoding),
+            (.invalidResponse, StringConstant.Error.CitySearch.invalidResponse),
+            (.noResults, StringConstant.Error.CitySearch.noResults)
+        ]
+
+        for (error, expectedMessage) in testCases {
+            XCTAssertEqual(CityErrorMessageMapper.message(for: error), expectedMessage)
+        }
+    }
+
+    func testMessageUsesSafeFallbackForUnexpectedErrors() {
+        XCTAssertEqual(CityErrorMessageMapper.message(for: TestError.expected), StringConstant.Error.CitySearch.unexpected)
+    }
+}
+
+@MainActor
 final class WeatherForecastViewDataMapperTests: XCTestCase {
     func testMapCreatesDisplayReadyForecastAndActivityInformation() {
         let mapper = WeatherForecastViewDataMapper(
@@ -218,12 +244,12 @@ final class CitySearchViewModelTests: XCTestCase {
         await emptyViewModel.searchCities(matching: "Paris")
         XCTAssertEqual(emptyViewModel.state, .empty)
 
-        let failedRepository = CityRepositorySpy(result: .failure(WeatherError.serverError))
+        let failedRepository = CityRepositorySpy(result: .failure(CitySearchError.serverError))
         let failedViewModel = CitySearchViewModel(
             searchCitiesUseCase: SearchCitiesUseCase(repository: failedRepository)
         )
         await failedViewModel.searchCities(matching: "Paris")
-        XCTAssertEqual(failedViewModel.state, .failure(StringConstant.Error.server))
+        XCTAssertEqual(failedViewModel.state, .failure(StringConstant.Error.CitySearch.server))
     }
 
     @MainActor
