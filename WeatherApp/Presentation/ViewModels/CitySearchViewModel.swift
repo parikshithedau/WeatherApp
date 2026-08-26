@@ -1,14 +1,6 @@
 import Combine
 import Foundation
 
-enum CitySearchState: Equatable {
-    case idle
-    case loading
-    case results([City])
-    case empty
-    case failure(String)
-}
-
 @MainActor
 final class CitySearchViewModel: ObservableObject {
     @Published var query = StringConstant.Common.empty
@@ -69,5 +61,15 @@ final class CitySearchViewModel: ObservableObject {
     func cancelSearch() {
         searchTask?.cancel()
         searchTask = nil
+    }
+}
+
+extension CitySearchViewModel {
+    enum CitySearchState: Equatable {
+        case idle
+        case loading
+        case results([City])
+        case empty
+        case failure(String)
     }
 }

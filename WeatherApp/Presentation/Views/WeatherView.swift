@@ -4,7 +4,7 @@ struct WeatherView: View {
     @Environment(AppRouter.self) private var router
     @State private var viewModel: WeatherViewModel
 
-    init(viewModel: WeatherViewModel = DependencyContainer.makeWeatherViewModel()) {
+    init(viewModel: WeatherViewModel) {
         _viewModel = State(initialValue: viewModel)
     }
 
@@ -194,5 +194,5 @@ struct WeatherView: View {
 }
 
 #Preview {
-    WeatherView()
+    WeatherView(viewModel: DependencyContainer.makeWeatherViewModel())
 }

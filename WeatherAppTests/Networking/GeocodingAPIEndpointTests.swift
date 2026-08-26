@@ -8,10 +8,10 @@ final class GeocodingAPIEndpointTests: XCTestCase {
         let queryItems = try XCTUnwrap(URLComponents(url: endpoint.makeURL(), resolvingAgainstBaseURL: false)?.queryItems)
 
         XCTAssertEqual(endpoint.method, .get)
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.cityNameParameter), "New York")
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.cityCountParameter), "6")
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.languageParameter), StringConstant.API.englishLanguage)
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.formatParameter), StringConstant.API.jsonFormat)
+        XCTAssertEqual(queryItems.value(named: APIConstants.cityNameParameter), "New York")
+        XCTAssertEqual(queryItems.value(named: APIConstants.cityCountParameter), "6")
+        XCTAssertEqual(queryItems.value(named: APIConstants.languageParameter), APIConstants.englishLanguage)
+        XCTAssertEqual(queryItems.value(named: APIConstants.formatParameter), APIConstants.jsonFormat)
     }
 
     func testGeocodingAPIServiceReturnsEmptyListWhenAPIResponseOmitsResults() async throws {

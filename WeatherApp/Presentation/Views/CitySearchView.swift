@@ -5,7 +5,7 @@ struct CitySearchView: View {
     @FocusState private var isSearchFieldFocused: Bool
     @StateObject private var viewModel: CitySearchViewModel
 
-    init(viewModel: CitySearchViewModel = DependencyContainer.makeCitySearchViewModel()) {
+    init(viewModel: CitySearchViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -99,6 +99,6 @@ private struct CityRow: View {
 }
 
 #Preview {
-    CitySearchView()
+    CitySearchView(viewModel: DependencyContainer.makeCitySearchViewModel())
         .environment(AppRouter())
 }

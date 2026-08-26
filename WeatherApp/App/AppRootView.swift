@@ -7,11 +7,11 @@ struct AppRootView: View {
         @Bindable var router = router
 
         NavigationStack(path: $router.path) {
-            WeatherView()
+            WeatherView(viewModel: DependencyContainer.makeWeatherViewModel())
                 .navigationDestination(for: AppRouter.Route.self) { route in
                     switch route {
                     case .citySearch:
-                        CitySearchView()
+                        CitySearchView(viewModel: DependencyContainer.makeCitySearchViewModel())
                     }
                 }
         }

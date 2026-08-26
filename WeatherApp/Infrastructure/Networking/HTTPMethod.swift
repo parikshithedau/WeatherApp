@@ -8,10 +8,10 @@ enum HTTPMethod: Sendable, Equatable {
 
     var rawValue: String {
         switch self {
-        case .get: StringConstant.HTTPMethod.get
-        case .post: StringConstant.HTTPMethod.post
-        case .put: StringConstant.HTTPMethod.put
-        case .delete: StringConstant.HTTPMethod.delete
+        case .get: "GET"
+        case .post: "POST"
+        case .put: "PUT"
+        case .delete: "DELETE"
         }
     }
 }

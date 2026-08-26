@@ -8,11 +8,11 @@ final class WeatherAPIEndpointTests: XCTestCase {
         let queryItems = try XCTUnwrap(URLComponents(url: endpoint.makeURL(), resolvingAgainstBaseURL: false)?.queryItems)
 
         XCTAssertEqual(endpoint.method, .get)
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.latitudeParameter), "51.5072")
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.longitudeParameter), "-0.1276")
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.forecastDaysParameter), "9")
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.timezoneParameter), StringConstant.API.automaticTimezone)
-        XCTAssertEqual(queryItems.value(named: StringConstant.API.dailyParameter), StringConstant.API.dailyFields)
+        XCTAssertEqual(queryItems.value(named: APIConstants.latitudeParameter), "51.5072")
+        XCTAssertEqual(queryItems.value(named: APIConstants.longitudeParameter), "-0.1276")
+        XCTAssertEqual(queryItems.value(named: APIConstants.forecastDaysParameter), "9")
+        XCTAssertEqual(queryItems.value(named: APIConstants.timezoneParameter), APIConstants.automaticTimezone)
+        XCTAssertEqual(queryItems.value(named: APIConstants.dailyParameter), APIConstants.dailyFields)
     }
 
     func testWeatherAPIServiceBuildsForecastEndpointAndForwardsClientErrors() async throws {

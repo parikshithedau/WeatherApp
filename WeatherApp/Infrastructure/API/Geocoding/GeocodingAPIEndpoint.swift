@@ -7,14 +7,14 @@ enum GeocodingAPIEndpoint {
         let query: String
         let limit: Int
 
-        var baseURL: String { StringConstant.API.geocodingBaseURL }
-        var path: String { StringConstant.API.geocodingSearchPath }
+        var baseURL: String { APIConstants.geocodingBaseURL }
+        var path: String { APIConstants.geocodingSearchPath }
         var queryItems: [URLQueryItem]? {
             [
-                URLQueryItem(name: StringConstant.API.cityNameParameter, value: query),
-                URLQueryItem(name: StringConstant.API.cityCountParameter, value: String(limit)),
-                URLQueryItem(name: StringConstant.API.languageParameter, value: StringConstant.API.englishLanguage),
-                URLQueryItem(name: StringConstant.API.formatParameter, value: StringConstant.API.jsonFormat)
+                URLQueryItem(name: APIConstants.cityNameParameter, value: query),
+                URLQueryItem(name: APIConstants.cityCountParameter, value: String(limit)),
+                URLQueryItem(name: APIConstants.languageParameter, value: APIConstants.englishLanguage),
+                URLQueryItem(name: APIConstants.formatParameter, value: APIConstants.jsonFormat)
             ]
         }
     }
