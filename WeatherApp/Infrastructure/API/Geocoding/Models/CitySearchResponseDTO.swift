@@ -6,7 +6,7 @@ nonisolated struct CitySearchResponseDTO: Decodable, Sendable {
     let results: [CitySearchResultDTO]?
 }
 
-nonisolated struct CitySearchResultDTO: Decodable, Sendable {
+nonisolated struct CitySearchResultDTO: Decodable, Sendable, Equatable {
     let id: Int
     let name: String
     let latitude: Double

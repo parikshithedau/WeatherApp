@@ -1,10 +1,10 @@
 import Foundation
 
-nonisolated struct WeatherResponseDTO: Decodable, Sendable {
+nonisolated struct WeatherResponseDTO: Decodable, Sendable, Equatable {
     let timezone: String
     let daily: DailyDTO
 
-    struct DailyDTO: Decodable, Sendable {
+    struct DailyDTO: Decodable, Sendable, Equatable {
         let time: [String]
         let weatherCode: [Int]
         let maximumTemperature: [Double]

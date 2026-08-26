@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-enum CitySearchState {
+enum CitySearchState: Equatable {
     case idle
     case loading
     case results([City])
@@ -14,46 +14,55 @@ final class CitySearchViewModel: ObservableObject {
     @Published var query = StringConstant.Common.empty
     @Published private(set) var state: CitySearchState = .idle
     private let minimumQueryLength = 2
+    private let debounceInterval: RunLoop.SchedulerTimeType.Stride
 
     private let searchCitiesUseCase: SearchCitiesUseCase
     private var searchTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
 
-    init(searchCitiesUseCase: SearchCitiesUseCase) {
+    init(
+        searchCitiesUseCase: SearchCitiesUseCase,
+        debounceInterval: RunLoop.SchedulerTimeType.Stride = .milliseconds(300)
+    ) {
         self.searchCitiesUseCase = searchCitiesUseCase
+        self.debounceInterval = debounceInterval
 
         $query
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .removeDuplicates()
-            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .debounce(for: debounceInterval, scheduler: RunLoop.main)
             .sink { [weak self] query in
                 Task { @MainActor [weak self] in
-                    self?.searchCities(matching: query)
+                    self?.startSearch(matching: query)
                 }
             }
             .store(in: &cancellables)
     }
 
-    private func searchCities(matching query: String) {
+    private func startSearch(matching query: String) {
         searchTask?.cancel()
 
-        guard query.count >= minimumQueryLength else {
+        searchTask = Task { [weak self] in
+            await self?.searchCities(matching: query)
+        }
+    }
+
+    func searchCities(matching query: String) async {
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedQuery.count >= minimumQueryLength else {
             state = .idle
             return
         }
 
-        searchTask = Task { [weak self] in
-            guard let self else { return }
-            state = .loading
+        state = .loading
 
-            do {
-                let cities = try await searchCitiesUseCase.execute(query: query)
-                guard !Task.isCancelled else { return }
-                state = cities.isEmpty ? .empty : .results(cities)
-            } catch {
-                guard !Task.isCancelled else { return }
-                state = .failure(ErrorMessageMapper.message(for: error))
-            }
+        do {
+            let cities = try await searchCitiesUseCase.execute(query: trimmedQuery)
+            guard !Task.isCancelled else { return }
+            state = cities.isEmpty ? .empty : .results(cities)
+        } catch {
+            guard !Task.isCancelled else { return }
+            state = .failure(ErrorMessageMapper.message(for: error))
         }
     }
 

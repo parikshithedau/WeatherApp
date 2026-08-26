@@ -14,16 +14,17 @@ struct WeatherView: View {
 
             forecastDaysPicker
 
-            if viewModel.isLoading {
+            switch viewModel.state {
+            case .idle:
+                placeholderContent
+            case .loading:
                 ProgressView(StringConstant.Weather.loading)
-            } else if let forecast = viewModel.forecast {
+            case .loaded(let forecast):
                 ScrollView {
                     weatherContent(forecast)
                 }
-            } else if let error = viewModel.errorMessage {
-                errorContent(error)
-            } else {
-                placeholderContent
+            case .error(let message):
+                errorContent(message)
             }
 
             Spacer()

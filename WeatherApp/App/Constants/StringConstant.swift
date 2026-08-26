@@ -175,14 +175,21 @@ enum StringConstant {
 
     enum Error {
         static let invalidCity = "Please enter a valid city name."
+        static let invalidSearchQuery = "Enter at least two characters to search for a city."
+        static let invalidRequest = "The request could not be processed. Please try again."
         static let network = "Unable to connect. Check your network and try again."
+        static let requestTimeout = "The request timed out. Please try again."
+        static let unauthorized = "The service could not authorize this request. Please try again later."
+        static let forbidden = "The service is not available for this request. Please try again later."
+        static let rateLimited = "Too many requests were made. Please wait a moment and try again."
+        static let server = "The weather service is temporarily unavailable. Please try again later."
         static let decoding = "Received an unexpected response from the server."
+        static let invalidResponse = "The server returned an invalid response. Please try again."
         static let cityNotFound = "City not found. Try a different search."
         static let noWeatherData = "No weather forecast is available for this city."
         static let invalidForecastDays = "Choose between 1 and 16 forecast days."
         static let unexpected = "Something went wrong."
         static let invalidURL = "The request URL is invalid."
-        static let invalidResponse = "The server returned an invalid response."
         static let responseDecoding = "Failed to decode the server response."
 
         static func httpStatus(_ statusCode: Int) -> String {

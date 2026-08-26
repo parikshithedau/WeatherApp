@@ -1,6 +1,6 @@
 import Foundation
 
-enum HTTPMethod: Sendable {
+enum HTTPMethod: Sendable, Equatable {
     case get
     case post
     case put

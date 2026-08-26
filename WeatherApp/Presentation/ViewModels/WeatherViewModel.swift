@@ -3,10 +3,8 @@ import Foundation
 @MainActor
 @Observable
 final class WeatherViewModel {
-    var forecast: WeatherForecastViewData?
+    private(set) var state: WeatherState = .idle
     var forecastDays = 7
-    var isLoading = false
-    var errorMessage: String?
 
     private let getWeatherUseCase: GetWeatherUseCase
     private let forecastViewDataMapper: any WeatherForecastViewDataMapping
@@ -29,18 +27,15 @@ final class WeatherViewModel {
         guard let selectedCity else { return }
         await loadWeather(for: selectedCity)
     }
- 
+
     private func loadWeather(for city: City) async {
-        isLoading = true
-        errorMessage = nil
-        defer { isLoading = false }
+        state = .loading
 
         do {
             let weatherForecast = try await getWeatherUseCase.execute(city: city, forecastDays: forecastDays)
-            forecast = forecastViewDataMapper.map(weatherForecast)
+            state = .loaded(forecastViewDataMapper.map(weatherForecast))
         } catch {
-            errorMessage = ErrorMessageMapper.message(for: error)
-            forecast = nil
+            state = .error(ErrorMessageMapper.message(for: error))
         }
     }
 
@@ -52,5 +47,27 @@ final class WeatherViewModel {
             country: selectedCity.country
         )
     }
+}
 
+extension WeatherViewModel {
+
+    enum WeatherState: Equatable {
+        case idle
+        case loading
+        case loaded(WeatherForecastViewData)
+        case error(String)
+
+        static func == (lhs: WeatherState, rhs: WeatherState) -> Bool {
+            switch (lhs, rhs) {
+            case (.idle, .idle), (.loading, .loading):
+                return true
+            case let (.loaded(a), .loaded(b)):
+                return a == b
+            case let (.error(a), .error(b)):
+                return a == b
+            default:
+                return false
+            }
+        }
+    }
 }

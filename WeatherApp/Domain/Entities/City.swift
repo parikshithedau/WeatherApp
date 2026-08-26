@@ -7,5 +7,4 @@ struct City: Equatable, Identifiable, Sendable {
     let timeZone: String?
     let latitude: Double
     let longitude: Double
-
 }
